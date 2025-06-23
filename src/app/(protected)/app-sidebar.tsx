@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import {
@@ -74,12 +75,15 @@ const Projects = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <div className="flex items-center gap-2">
           <Image src="/logo.png" alt="logo" width={40} height={40} />
-          <h1 className="text-primary/80 text-xl font-bold">Github Wizard</h1>
+          {open && (
+            <h1 className="text-primary/80 text-xl font-bold">Github Wizard</h1>
+          )}
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -135,14 +139,16 @@ export function AppSidebar() {
               })}
 
               <div className="h-2"></div>
-              <SidebarMenuItem>
-                <Link href="/create">
-                  <Button size={"sm"} variant={"outline"} className="w-fit">
-                    <Plus />
-                    Create Project
-                  </Button>
-                </Link>
-              </SidebarMenuItem>
+              {open && (
+                <SidebarMenuItem>
+                  <Link href="/create">
+                    <Button size={"sm"} variant={"outline"} className="w-fit">
+                      <Plus />
+                      Create Project
+                    </Button>
+                  </Link>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
