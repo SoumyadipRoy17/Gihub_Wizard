@@ -24,6 +24,7 @@ const SyncUser = async () => {
       lastName: user.lastName ?? "",
     },
     create: {
+      id: user.id,
       emailAddress: user.emailAddresses[0]?.emailAddress ?? "",
       imageUrl: user.imageUrl ?? "",
       firstName: user.firstName ?? "",

@@ -1,9 +1,36 @@
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const projectRouter = createTRPCRouter({
-  createProject: protectedProcedure.input().mutation(async ({ ctx, input }) => {
-    ctx.user.userId;
-    console.log("hi");
-    return true;
-  }),
+  createProject: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        githubUrl: z.string(),
+        githubToken: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log("ctx", ctx.user);
+      const user = await ctx.db.user.findUnique({
+        where: { id: ctx.user.userId! },
+      });
+
+      if (!user) {
+        throw new Error("User does not exist.");
+      }
+
+      const project = await ctx.db.project.create({
+        data: {
+          githubUrl: input.githubUrl,
+          name: input.name,
+          userToProjects: {
+            create: {
+              userId: ctx.user.userId!,
+            },
+          },
+        },
+      });
+      return project;
+    }),
 });
