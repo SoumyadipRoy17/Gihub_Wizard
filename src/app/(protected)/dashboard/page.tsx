@@ -36,6 +36,7 @@ const DashboardPage = () => {
       </div>
       <div className="mt-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+          {project?.id}
           AskQuestionCard MeetingCard
         </div>
       </div>
