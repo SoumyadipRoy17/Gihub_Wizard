@@ -26,6 +26,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 import { title } from "process";
+import useProject from "@/hooks/use-project";
 
 const items = [
   {
@@ -50,32 +51,10 @@ const items = [
   },
 ];
 
-const Projects = [
-  {
-    title: "Project A",
-    url: "/project-a",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Project B",
-    url: "/project-b",
-    icon: Bot,
-  },
-  {
-    title: "Project C",
-    url: "/project-c",
-    icon: Presentation,
-  },
-  {
-    title: "Project D",
-    url: "/project-d",
-    icon: CreditCard,
-  },
-];
-
 export function AppSidebar() {
   const pathname = usePathname();
   const { open } = useSidebar();
+  const { projects, projectId, setProjectId } = useProject();
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
@@ -118,20 +97,25 @@ export function AppSidebar() {
           <SidebarGroupLabel>Your Projects : </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {Projects.map((item) => {
+              {projects?.map((project) => {
                 return (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={project.id}>
                     <SidebarMenuButton asChild>
-                      <div>
+                      <div
+                        onClick={() => setProjectId(project.id)}
+                        className="cursor-pointer"
+                      >
                         <div
                           className={cn(
                             "text-primary flex size-6 items-center justify-center rounded-sm border bg-white text-sm",
-                            { "bg-primary text-white": true },
+                            {
+                              "bg-primary text-white": project.id === projectId,
+                            },
                           )}
                         >
-                          {item.title.charAt(0).toUpperCase()}
+                          {project.name.charAt(0).toUpperCase()}
                         </div>
-                        <span>{item.title}</span>
+                        <span>{project.name}</span>
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
