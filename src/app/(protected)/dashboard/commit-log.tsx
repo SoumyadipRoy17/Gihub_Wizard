@@ -5,6 +5,7 @@ import { api } from "@/trpc/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 const CommitLog = () => {
   const { projectId, project } = useProject();
@@ -37,9 +38,18 @@ const CommitLog = () => {
                     href={`${project?.githubUrl}/commits/${commit.commitHash}`}
                     className="py-0.5 text-xs leading-5 text-gray-500"
                   >
-                    {commit.commitMessage}
+                    <span className="font-medium text-gray-900">
+                      {commit.commitAuthorName}{" "}
+                    </span>
+                    <span className="inline-flex items-center">
+                      commited <ExternalLink className="ml-1 size-4" />
+                    </span>
                   </Link>
                 </div>
+                <span className="font-semibold">{commit.commitMessage}</span>
+                <pre className="mt-2 text-sm leading-6 whitespace-pre-wrap text-gray-500">
+                  {commit.summary || "No summary available"}
+                </pre>
               </div>
             </>
           </li>
