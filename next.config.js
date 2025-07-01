@@ -5,6 +5,25 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  reactStrictMode: true,
+  transpilePackages: ["@github_wizard/ui", "@github_wizard/db"],
+  //   experimental: {
+  //     serverActions: true,
+  //   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
+  typescript: {
+    ignoreBuildErrors: true, // For development purposes only
+  },
+};
 
 export default config;
