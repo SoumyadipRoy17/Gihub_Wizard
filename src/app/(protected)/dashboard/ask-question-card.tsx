@@ -31,16 +31,32 @@ const AskQuestionCard = () => {
   const [answer, setAnswer] = React.useState("");
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setAnswer(""); // Clear old answer
+    setLoading(true); // You forgot to enable loading
+
     if (!project?.id) return;
     setOpen(true);
 
     const { output, filesReferences } = await askQuestion(question, project.id);
+    // output is assumed to be streamable; no need to check for 'readable' property
+    console.log("output received:", output);
 
     setFilesReferences(filesReferences);
 
-    for await (const delta of readStreamableValue(output)) {
-      if (delta) setAnswer((ans) => ans + delta);
+    // for await (const delta of readStreamableValue(output)) {
+    //   if (delta) setAnswer((ans) => ans + delta);
+    // }
+    try {
+      for await (const delta of readStreamableValue(output)) {
+        if (delta) setAnswer((ans) => ans + delta);
+        console.log("delta", delta);
+      }
+      console.log("Didnt enter delta");
+    } catch (err) {
+      console.error("Streaming failed:", err);
+      setAnswer("Something went wrong while generating the answer.");
     }
+
     setLoading(false);
   };
 
@@ -59,7 +75,7 @@ const AskQuestionCard = () => {
               />
             </DialogTitle>
           </DialogHeader>
-          {answer}
+          <DialogDescription>{answer}</DialogDescription>
           <h1>File References</h1>
           {filesReferences?.map((file) => {
             return <span key={file.fileName}>{file.fileName}</span>;

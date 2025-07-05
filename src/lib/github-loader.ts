@@ -24,7 +24,7 @@ export const indexGithubRepo = async (
   githubUrl: string,
   githubToken?: string,
 ) => {
-  const docs = await LoadGithubRepo(githubUrl, githubToken);
+  const docs = await LoadGithubRepo(githubUrl, process.env.GITHUB_TOKEN);
   if (docs.length === 0) {
     throw new Error("No documents found in the GitHub repository.");
   }
