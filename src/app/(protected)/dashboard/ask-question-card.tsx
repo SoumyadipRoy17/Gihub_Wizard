@@ -16,6 +16,8 @@ import React from "react";
 import { askQuestion } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import CodeReferences from "./code-references";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
@@ -31,6 +33,14 @@ const AskQuestionCard = () => {
   >();
 
   const [answer, setAnswer] = React.useState("");
+  const saveAnswer = api.project.saveAnswer.useMutation({
+    onSuccess: () => {
+      console.log("Answer saved successfully");
+    },
+    onError: (error) => {
+      console.error("Error saving answer:", error);
+    },
+  });
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAnswer(""); // Clear old answer
@@ -68,6 +78,7 @@ const AskQuestionCard = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[80vw]">
           <DialogHeader>
+            <div className="flex items-center gap-2"></div>
             <DialogTitle>
               {" "}
               <Image
@@ -76,6 +87,30 @@ const AskQuestionCard = () => {
                 width={40}
                 height={40}
               />
+              <Button
+                disabled={saveAnswer.isPending}
+                variant={"outline"}
+                onClick={() => {
+                  saveAnswer.mutate(
+                    {
+                      projectId: project!.id,
+                      question,
+                      answer,
+                      filesReferences: filesReferences ?? [],
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success("Answer saved successfully");
+                      },
+                      onError: (error) => {
+                        toast.error("Error saving answer: " + error.message);
+                      },
+                    },
+                  );
+                }}
+              >
+                Save Answer
+              </Button>
             </DialogTitle>
           </DialogHeader>
 
