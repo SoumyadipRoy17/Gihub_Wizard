@@ -18,6 +18,7 @@ import { readStreamableValue } from "ai/rsc";
 import CodeReferences from "./code-references";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import useRefetch from "@/hooks/use-refetch";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
@@ -73,6 +74,8 @@ const AskQuestionCard = () => {
     setLoading(false);
   };
 
+  const refetch = useRefetch();
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -101,6 +104,7 @@ const AskQuestionCard = () => {
                     {
                       onSuccess: () => {
                         toast.success("Answer saved successfully");
+                        refetch();
                       },
                       onError: (error) => {
                         toast.error("Error saving answer: " + error.message);
@@ -118,10 +122,9 @@ const AskQuestionCard = () => {
             MDEditor.Markdown is used here to render the AI-generated answer as formatted Markdown.
             This usage is based on the @uiw/react-md-editor API, which allows rendering Markdown content.
             */}
-          <MDEditor.Markdown
-            source={answer}
-            className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll bg-white text-black"
-          />
+          <p className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll bg-white text-black">
+            {answer ?? ""}
+          </p>
           <div className="h-4"></div>
 
           <CodeReferences fileReferences={filesReferences ?? []} />
