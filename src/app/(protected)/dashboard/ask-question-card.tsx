@@ -65,7 +65,7 @@ const AskQuestionCard = () => {
         if (delta) setAnswer((ans) => ans + delta);
         console.log("delta", delta);
       }
-      console.log("Didnt enter delta");
+      console.log("Didn't enter delta");
     } catch (err) {
       console.error("Streaming failed:", err);
       setAnswer("Something went wrong while generating the answer.");
@@ -77,7 +77,7 @@ const AskQuestionCard = () => {
   const refetch = useRefetch();
 
   return (
-    <>
+    <div className="w-full sm:col-span-3">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[80vw]">
           <DialogHeader>
@@ -162,7 +162,7 @@ const AskQuestionCard = () => {
           </form>
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 };
 
