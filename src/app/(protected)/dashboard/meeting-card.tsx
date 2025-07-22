@@ -6,6 +6,7 @@ import { set } from "date-fns";
 import { Presentation, Upload } from "lucide-react";
 import React from "react";
 import { useDropzone } from "react-dropzone";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
 const MeetingCard = () => {
   const [progress, setProgress] = React.useState(0);
@@ -20,6 +21,7 @@ const MeetingCard = () => {
       setIsUploading(true);
       const file = acceptedFiles[0];
       const downloadURL = await uploadFile(file as File, setProgress);
+      window.alert(`File uploaded successfully! Download URL: ${downloadURL}`);
       setIsUploading(false);
     },
   });
@@ -47,6 +49,23 @@ const MeetingCard = () => {
             </Button>
           </div>
         </>
+      )}
+      {isUploading && (
+        <div>
+          <CircularProgressbar
+            value={progress}
+            text={`${Math.round(progress)}%`}
+            styles={buildStyles({
+              pathColor: "#4f46e5",
+              textColor: "#4f46e5",
+              trailColor: "#e5e7eb",
+            })}
+            className="text-center"
+          />
+          <p className="mt-2 text-center text-sm text-gray-500">
+            Uploading your meeting...
+          </p>
+        </div>
       )}
     </Card>
   );
