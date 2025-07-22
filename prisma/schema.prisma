@@ -118,12 +118,10 @@ model Meeting {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-   
+    name String
 
     meetingUrl String //firebase storage url
-
-    summary String?
-    summaryEmbedding Unsupported("vector(768)")?
+    status MeetingStatus @default(PROCESSING)
 
     projectId String
     project Project @relation(fields: [projectId], references: [id])

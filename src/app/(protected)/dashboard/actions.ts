@@ -11,12 +11,11 @@ const google = createGoogleGenerativeAI({
 
 export async function askQuestion(question: string, projectId: string) {
   const stream = createStreamableValue();
-
   const queryVector = await generateEmbedding(question);
   const vectorQuery = `[${queryVector.join(",")}]`;
 
   const result = (await db.$queryRaw`
-  SELECT "fileName","sourceCode","summary",
+  SELECT "fileName","sourceCode","summary",.0
   1-("summaryEmbedding"<=> ${vectorQuery}::vector)  AS similarity
   FROM "SourceCodeEmbedding"
   WHERE 1-("summaryEmbedding"<=> ${vectorQuery}::vector) > 0.5
