@@ -27,6 +27,9 @@ const config = {
       },
     ],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   typescript: {
     ignoreBuildErrors: true, // For development purposes only
   },

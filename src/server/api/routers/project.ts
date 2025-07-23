@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { get } from "http";
 import { pollCommits } from "@/lib/github";
-import { indexGithubRepo } from "@/lib/github-loader";
+import { checkCredits, indexGithubRepo } from "@/lib/github-loader";
 
 export const projectRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -144,5 +144,35 @@ export const projectRouter = createTRPCRouter({
         data: { deletedAt: new Date() },
       });
       return project;
+    }),
+  getTeamMembers: protectedProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.userToProject.findMany({
+        where: { projectId: input.projectId },
+        include: { user: true },
+      });
+    }),
+
+  getMyCredits: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findUnique({
+      where: { id: ctx.user.userId! },
+      select: { credits: true },
+    });
+  }),
+  checkCredits: protectedProcedure
+    .input(
+      z.object({ githubUrl: z.string(), githubToken: z.string().optional() }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const fileCount = await checkCredits(input.githubUrl, input.githubToken);
+      const userCredits = await ctx.db.user.findUnique({
+        where: { id: ctx.user.userId! },
+        select: { credits: true },
+      });
+      return {
+        fileCount,
+        userCredits: userCredits?.credits || 0,
+      };
     }),
 });
