@@ -78,7 +78,7 @@ const MeetingCard = () => {
           },
         },
       );
-      window.alert(downloadURL);
+
       setIsUploading(false);
     },
   });
