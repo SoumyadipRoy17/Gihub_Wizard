@@ -42,15 +42,15 @@ const JoinHandler = async (props: Props) => {
   try {
     await db.userToProject.create({
       data: {
-        projectId: project.id,
-        userId: userId,
+        projectId,
+        userId,
       },
     });
   } catch (error) {
     console.log("user already in project");
   }
 
-  return redirect(`/dashboard/${projectId}`);
+  return redirect(`/dashboard`);
 };
 
 export default JoinHandler;
